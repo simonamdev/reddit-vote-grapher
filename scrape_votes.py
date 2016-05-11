@@ -4,6 +4,8 @@ import os
 import csv
 import praw
 import OAuth2Util
+from pprint import pprint
+from time import sleep
 
 
 class SubmissionCSV:
@@ -15,9 +17,17 @@ class SubmissionCSV:
         self.create_csv()
 
     def create_csv(self):
+        # create the CSV if it does not exist
         if not os.path.isfile(self.file_path):
             with open(self.file_path, mode='w', newline='') as csvfile:
                 csvfile.flush()
+
+    def write_row(self, row=None):
+        if row is not None:
+            with open(self.file_path, mode='a', newline='') as csvfile:
+                writer = csv.writer(csvfile, quotechar='"')
+                writer.writerow(row)
+            csvfile.flush()
 
 
 class VoteScraper:
@@ -28,7 +38,7 @@ class VoteScraper:
         self.r = None
         self.o = None
         self.subreddit = None
-        # holds the ids for cached submissions. This is rebuilt every time the script starts from
+        # holds the objects for cached submissions. This is rebuilt every time the script starts from
         # the names of the CSV files
         self.cached_submissions = []
 
@@ -50,9 +60,20 @@ class VoteScraper:
 
     def get_latest_submissions(self):
         self.print('Getting latest submissions')
-        new_submissions = self.subreddit.get_new(limit=100)
+        new_submissions = self.subreddit.get_new(limit=150)
         for i, sub in enumerate(new_submissions):
-            self.print('[{}] {}'.format(i, sub.id))
+            ratio = self.r.get_submission(sub.permalink).upvote_ratio
+            ups = int(round((ratio*sub.score)/(2*ratio - 1)) if ratio != 0.5 else round(sub.score/2))
+            downs = ups - sub.score
+            self.print('[{}] ID: {} Score: {} Up: {} Down: {} Ratio: {} Link: {}'.format(
+                    i,
+                    sub.id,
+                    sub.score,
+                    ups,
+                    downs,
+                    ratio,
+                    sub.short_link))
+            sleep(1)
 
 
 def main():
