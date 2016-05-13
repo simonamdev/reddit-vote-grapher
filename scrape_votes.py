@@ -50,6 +50,7 @@ class VoteScraper:
     def run(self):
         self.connect()
         while True:
+            print('Retrieving/Removing submissions')
             self.cache_new_submissions()
             self.remove_old_submissions()
             self.store_submissions_data()
@@ -80,7 +81,7 @@ class VoteScraper:
 
     def cache_new_submissions(self):
         new_submissions = self.get_latest_submissions()
-        self.print('Caching new submissions')
+        # self.print('Caching new submissions')
         previous_count = len(self.cached_submissions)
         for submission in new_submissions:
             if submission not in self.cached_submissions:
@@ -88,8 +89,8 @@ class VoteScraper:
         self.print('{} new submissions recorded'.format(len(self.cached_submissions) - previous_count))
 
     def remove_old_submissions(self):
-        self.print('Removing old submissions')
-        current_time = time.mktime(time.gmtime())
+        # self.print('Removing old submissions')
+        current_time = time.time()
         to_remove = []
         previous_count = len(self.cached_submissions)
         for submission in self.cached_submissions:
@@ -109,7 +110,7 @@ class VoteScraper:
                 continue
             ups = int(round((ratio*sub.score)/(2*ratio - 1)) if ratio != 0.5 else round(sub.score/2))
             downs = ups - sub.score
-            self.print('[{}] ID: {} Score: {} Up: {} Down: {} Ratio: {} Link: {} Age: {} hours'.format(
+            self.print('[{}] ID: {} S/U/D: {}/{}/{} Ratio: {} Link: {} Age: {} hours'.format(
                     i,
                     sub.id,
                     sub.score,
