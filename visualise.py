@@ -32,7 +32,8 @@ def cache_file_data():
 @app.route('/')
 def index():
     global file_data_list
-    return render_template('index.html', file_data=file_data_list)
+    # return render_template('index.html', file_data=file_data_list)
+    return render_template('index.html', file_data=sorted(file_data_list, key=lambda data: data['age']))
 
 
 @app.route('/refresh')
