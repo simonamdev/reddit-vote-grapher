@@ -9,3 +9,7 @@ html, body {
 .incomplete {
 	background-color: red;
 }
+
+.centre-text {
+	text-align: center;
+}

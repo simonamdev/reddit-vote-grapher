@@ -22,15 +22,13 @@
         <div class="container-fluid">
             {% block body %}
                     {% block header %}
-                        <nav class="navbar navbar-default">
-                            <div class="container-fluid">
-                                <div class="navbar-header">
-                                    <a class="navbar-brand" href="{{ url_for('index') }}">
-                                        Reddit Vote Grapher
-                                    </a>
-                                </div>
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <h1 class="centre-text">Reddit Vote Graphing</h1>
                             </div>
-                        </nav>
+                            <div class="col-md-4"></div>
+                        </div>
                     {% endblock %}
                     {% block content %}
                     {% endblock %}
