@@ -14,8 +14,9 @@
             <!--
                 <button type="button" class="btn btn-danger" onclick="testVariables({{ data.data }})">Run Test</button>
             -->
-            <button type="button" class="btn btn-danger" onclick="drawGraph({{ data.data }})">Draw Graphs</button>
-            <a href="{{ data.link }}"><button type="button" class="btn btn-success">Submission Link</button></a>
+            <button type="button" class="btn btn-success" onclick="drawGraph({{ data.data }})">Draw Graphs</button>
+            <a href="{{ data.link }}"><button type="button" class="btn btn-info">Submission Link</button></a>
+            <a href="{{ url_for('index') }}"><button type="button" class="btn btn-danger">Return to homepage</button></a>
         </div>
         <div class="col-md-4"></div>
     </div>
