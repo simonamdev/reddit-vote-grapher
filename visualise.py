@@ -13,6 +13,8 @@ def convert_to_timestamp(epoch_time='0'):
 
 def cache_file_data():
     global file_data_list
+    # clear previous cache first
+    file_data_list = []
     files_dir = os.path.join(os.getcwd(), 'data')
     csv_files = os.listdir(files_dir)
     for file in csv_files:
@@ -66,5 +68,5 @@ def graph(name):
 
 if __name__ == '__main__':
     cache_file_data()
-    app.run(host='127.0.0.1', port=5000, debug=True)
-    # app.run(host='0.0.0.0', port=5000, debug=False)
+    # app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)
