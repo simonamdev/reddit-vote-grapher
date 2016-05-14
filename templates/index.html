@@ -2,5 +2,37 @@
 {% block css %}
 {% endblock %}
 {% block content %}
-    <h1>Index Page</h1>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Complete</th>
+                        <th>Link</th>
+                        <th>Graph</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in file_data %}
+                        <tr>
+                            <td>{{ data.name }}</td>
+                            <td>
+                                {% if data.complete %}
+                                    <div class="complete">&nbsp;</div>
+                                {% else %}
+                                    <div class="incomplete">&nbsp;</div>
+                                {% endif %}
+                            </td>
+                            <td><a href="http://redd.it/{{ data.name }}" target="_blank"><button type="button" class="btn btn-info">Reddit Post</button></a></td>
+                            <td><a href="#" target="_blank"><button type="button" class="btn btn-success">Graph</button></a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+
 {% endblock %}
