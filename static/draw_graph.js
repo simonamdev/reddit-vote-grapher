@@ -22,45 +22,61 @@ function drawAll(dataScore, dataUp, dataDown, dataRatio) {
 
 	groups.add({
     id: 0,
-    content: 'score',
+    content: 'score'
 	});
 
 	groups.add({
     id: 1,
-    content: 'up',
+    content: 'up'
 	});
 
 	groups.add({
     id: 2,
-    content: 'down',
+    content: 'down'
 	});
 
 	groups.add({
     id: 3,
-    content: 'ratio',
+    content: 'ratio'
 	});
 
 	items = [];
 
 	dataScore.forEach(function(item, index) {
+		if (item.y < 0) {
+			item.y = 0;
+		}
 		items.push({x: item.x, y: item.y, group: 0});
 	});
 
 	dataUp.forEach(function(item, index) {
+		if (item.y < 0) {
+			item.y = 0;
+		}
 		items.push({x: item.x, y: item.y, group: 1});
 	});
 
 	dataDown.forEach(function(item, index) {
+		if (item.y < 0) {
+			item.y = 0;
+		}
 		items.push({x: item.x, y: item.y, group: 2});
 	});
 
 	dataRatio.forEach(function(item, index) {
+		if (item.y < 0) {
+			item.y = 0;
+		}
 		items.push({x: item.x, y: item.y, group: 3});
 	});
 
 	var dataset = new vis.DataSet(items);
 	var options = {
-		legend: true,
+    legend: {
+      left: {
+        position:"bottom-right"
+      }
+    },
 		shaded: true,
 		drawPoints: false
 	};
@@ -72,7 +88,10 @@ function drawUp(dataUp) {
 	var dataset = new vis.DataSet(dataUp);
 	var options = {
 		shaded: true,
-		drawPoints: false
+		drawPoints: false,
+		dataAxis: {
+
+		}
 	};
 	var graph2d = new vis.Graph2d(container, dataset, options);
 }
