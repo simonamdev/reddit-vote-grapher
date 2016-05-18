@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <a href="{{ url_for('refresh_data') }}"><button type="button" class="btn btn-success">Refresh File Data</button></a>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Age</th>
+                        <th>Time Last Read</th>
+                        <th>Complete</th>
+                        <th>Link</th>
+                        <th>Graph</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in file_data %}
+                        <tr>
+                            <td>{{ data.name }}</td>
+                            <td>{{ data.age }} hours</td>
+                            <td>{{ data.last_read }}</td>
+                            <td>
+                                {% if data.complete %}
+                                    <div class="complete">&nbsp;</div>
+                                {% else %}
+                                    <div class="incomplete">&nbsp;</div>
+                                {% endif %}
+                            </td>
+                            <td><a href="http://redd.it/{{ data.name }}" target="_blank"><button type="button" class="btn btn-info">Reddit Post</button></a></td>
+                            <td><a href="{{ url_for('graph', name=data.name) }}" target="_blank"><button type="button" class="btn btn-primary">Graph</button></a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+{% endblock %}
+{% block footer %}
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <a href="https://github.com/purrcat259/reddit-vote-grapher" target="_blank">
+            <button type="button" class="btn btn-success">GitHub Repository</button>
+        </a>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+{% endblock %}

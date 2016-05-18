@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% block js %}
+    <script src="{{ url_for('static', filename='draw_graph.js') }}"></script>
+    <script src="http://visjs.org/dist/vis.js"></script>
+{% endblock %}
+{% block css %}
+    <link href="http://visjs.org/dist/vis.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <h1>Graph for submission with ID: {{ data.name }}</h1>
+            <!--
+                <button type="button" class="btn btn-danger" onclick="testVariables({{ data.data }})">Run Test</button>
+            -->
+            <button type="button" class="btn btn-success" onclick="drawGraph({{ data.data }})">Draw Graphs</button>
+            <a href="{{ data.link }}" target="_blank"><button type="button" class="btn btn-info">Reddit Post</button></a>
+            <a href="{{ url_for('index') }}"><button type="button" class="btn btn-danger">Return to homepage</button></a>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <h1>All vs Time</h1>
+            <div id="visualization-all"></div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <h1>Score vs Time</h1>
+            <div id="visualization-score"></div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <h1>Up vs Time</h1>
+            <div id="visualization-up"></div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <h1>Down vs Time</h1>
+            <div id="visualization-down"></div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <h1>Ratio vs Time</h1>
+            <div id="visualization-ratio"></div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+{% endblock %}
