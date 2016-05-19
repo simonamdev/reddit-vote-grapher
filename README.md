@@ -31,4 +31,10 @@ It is suggested that you run this behind screen to keep it running in the backgr
 
 > ctrl+a, ctrl+d
 
-Follow up by navigating to http://ip\_of\_device:5000/ in your web browser
+Follow up by navigating to http://ip\_of\_device:5000/ in your web browser.
+
+![Browser view](http://imgur.com/KHYmECN)
+
+Clicking on **Graph** then on **Draw Graphs** for a given submission will visualise the stored data:
+
+![Drawn graphs](http://imgur.com/Mmvq5JC)
