@@ -41,10 +41,9 @@ class VoteScraper:
         self.r = None
         self.o = None
         self.subreddit = None
-        self.submission_limit = 15
+        self.submission_limit = 50
         self.start_time = time.time()
-        # holds the objects for cached submissions. This is rebuilt every time the script starts from
-        # the names of the CSV files
+        # holds the objects for cached submissions.
         self.cached_submissions = []
 
     def run(self):
@@ -54,8 +53,8 @@ class VoteScraper:
             self.cache_new_submissions()
             self.remove_old_submissions()
             self.store_submissions_data()
-            self.print('Pausing for 120 seconds')
             self.show_time_elapsed()
+            self.print('Pausing for 120 seconds')
             time.sleep(120)
 
     def print(self, string=''):
@@ -65,13 +64,19 @@ class VoteScraper:
     def connect(self):
         # initialise a connection to reddit
         self.print('Initialising connection to Reddit')
-        self.r = praw.Reddit(self.user_agent)
-        self.o = OAuth2Util.OAuth2Util(self.r)
-        self.print('Successfully connected to Reddit.')
+        try:
+            self.r = praw.Reddit(self.user_agent)
+            self.o = OAuth2Util.OAuth2Util(self.r)
+            # force re-validating the access token
+            self.o.refresh(force=True)
+            self.print('Successfully connected to Reddit')
+        except Exception as e:
+            print('Unable to connect to Reddit: {}'.format(e))
+            quit()
         self.subreddit = self.r.get_subreddit(subreddit_name=self.subreddit_name)
 
     def get_latest_submissions(self):
-        self.print('Getting latest submissions')
+        # self.print('Getting latest submissions')
         try:
             new_submissions = self.subreddit.get_new(limit=self.submission_limit)
         except Exception as e:
@@ -95,39 +100,47 @@ class VoteScraper:
         previous_count = len(self.cached_submissions)
         for submission in self.cached_submissions:
             if (current_time - submission.created_utc) > (12 * 60 * 60):
-                self.print('Removing Submission with ID: {} as it is older than 12 hours'.format(submission.id))
+                # self.print('Removing Submission with ID: {} as it is older than 12 hours'.format(submission.id))
                 to_remove.append(submission)
+        # remove the old submissions from the cached submissions list
         self.cached_submissions = [sub for sub in self.cached_submissions if sub not in to_remove]
-        self.print('{} old submissions removed'.format(len(self.cached_submissions) - previous_count))
+        self.print('{} old submissions removed'.format(previous_count - len(self.cached_submissions)))
+        # append '_complete' to the old submission file names
+        for submission in to_remove:
+            file_name = str(submission.id) + '.csv'
+            new_file_name = str(submission.id) + '_complete.csv'
+            path = os.path.join(os.getcwd(), 'data', file_name)
+            # only perform this if the file actually exists
+            if os.path.isfile(path):
+                os.rename(src=path, dst=os.path.join(os.getcwd(), 'data', new_file_name))
 
     def store_submissions_data(self):
         for i, sub in enumerate(self.cached_submissions):
             try:
                 sub.refresh()
                 ratio = self.r.get_submission(sub.permalink).upvote_ratio
-            except praw.errors.Forbidden as e:
+            except Exception as e:
                 print(e)
                 continue
             ups = int(round((ratio*sub.score)/(2*ratio - 1)) if ratio != 0.5 else round(sub.score/2))
             downs = ups - sub.score
-            self.print('[{}] ID: {} S/U/D: {}/{}/{} Ratio: {} Link: {} Age: {} hours'.format(
+            self.print('[{}] ID: {} S/U/D: {}/{}/{} Ratio: {} Age: {} hours Link: {}'.format(
                     i,
                     sub.id,
                     sub.score,
                     ups,
                     downs,
                     ratio,
-                    sub.short_link,
-                    abs(round((time.time() - sub.created_utc) / (60 * 60), 2))))
+                    abs(round((time.time() - sub.created_utc) / (60 * 60), 1)),
+                    sub.short_link))
             subcsv = SubmissionCSV(file_name=sub.id)
-            subcsv.run(data_row=[time.mktime(time.gmtime()), sub.score, ups, downs, ratio])
+            subcsv.run(data_row=[time.time(), sub.score, ups, downs, ratio])
             time.sleep(2)
 
     def show_time_elapsed(self):
-        time_elapsed = time.time() - self.start_time
         # convert to hours
-        time_elapsed /= (60 * 60)
-        self.print('{} hours passed since start of script'.format(time_elapsed))
+        time_elapsed = (time.time() - self.start_time) / (60 * 60)
+        self.print('{} hours passed since start of script'.format(round(time_elapsed, 1)))
 
 
 def main():
