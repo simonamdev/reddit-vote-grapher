@@ -7,7 +7,7 @@ function drawGraph(plotData) {
 		score.push({x: item[0], y: item[1]});
 		up.push({x: item[0], y: item[2]});
 		down.push({x: item[0], y: item[3]});
-		ratio.push({x: item[0], y: item[4]});
+		ratio.push({x: item[0], y: item[4] * 100});
 	});
 	drawAll(score, up, down, ratio);
 	drawScore(score);
@@ -34,12 +34,12 @@ function drawAll(dataScore, dataUp, dataDown, dataRatio) {
     id: 2,
     content: 'down'
 	});
-
+/*
 	groups.add({
     id: 3,
     content: 'ratio'
 	});
-
+*/
 	items = [];
 
 	dataScore.forEach(function(item, index) {
@@ -62,14 +62,14 @@ function drawAll(dataScore, dataUp, dataDown, dataRatio) {
 		}
 		items.push({x: item.x, y: item.y, group: 2});
 	});
-
+/*
 	dataRatio.forEach(function(item, index) {
 		if (item.y < 0) {
 			item.y = 0;
 		}
 		items.push({x: item.x, y: item.y, group: 3});
 	});
-
+*/
 	var dataset = new vis.DataSet(items);
 	var options = {
     legend: {
