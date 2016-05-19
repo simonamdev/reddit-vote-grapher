@@ -1,0 +1,15 @@
+html, body {
+  margin: 0 auto;
+}
+
+.complete {
+	background-color: green;
+}
+
+.incomplete {
+	background-color: red;
+}
+
+.centre-text {
+	text-align: center;
+}
