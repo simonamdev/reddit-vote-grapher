@@ -29,7 +29,7 @@
                                 {% endif %}
                             </td>
                             <td><a href="http://redd.it/{{ data.name }}" target="_blank"><button type="button" class="btn btn-info">Reddit Post</button></a></td>
-                            <td><a href="{{ url_for('graph', name=data.name) }}" target="_blank"><button type="button" class="btn btn-primary">Graph</button></a></td>
+                            <td><a href="{{ url_for('graph', name=data.name) }}"><button type="button" class="btn btn-primary">Graph</button></a></td>
                         </tr>
                     {% endfor %}
                 </tbody>
