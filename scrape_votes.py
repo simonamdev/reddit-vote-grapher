@@ -64,9 +64,15 @@ class VoteScraper:
     def connect(self):
         # initialise a connection to reddit
         self.print('Initialising connection to Reddit')
-        self.r = praw.Reddit(self.user_agent)
-        self.o = OAuth2Util.OAuth2Util(self.r)
-        self.print('Successfully connected to Reddit.')
+        try:
+            self.r = praw.Reddit(self.user_agent)
+            self.o = OAuth2Util.OAuth2Util(self.r)
+            # force re-validating the access token
+            self.o.refresh(force=True)
+            self.print('Successfully connected to Reddit')
+        except Exception as e:
+            print('Unable to connect to Reddit: {}'.format(e))
+            quit()
         self.subreddit = self.r.get_subreddit(subreddit_name=self.subreddit_name)
 
     def get_latest_submissions(self):
@@ -94,12 +100,12 @@ class VoteScraper:
         previous_count = len(self.cached_submissions)
         for submission in self.cached_submissions:
             if (current_time - submission.created_utc) > (12 * 60 * 60):
-                self.print('Removing Submission with ID: {} as it is older than 12 hours'.format(submission.id))
+                # self.print('Removing Submission with ID: {} as it is older than 12 hours'.format(submission.id))
                 to_remove.append(submission)
-        # remove the stale submissions from the cached submissions list
+        # remove the old submissions from the cached submissions list
         self.cached_submissions = [sub for sub in self.cached_submissions if sub not in to_remove]
         self.print('{} old submissions removed'.format(previous_count - len(self.cached_submissions)))
-        # append '_complete' to the stale submission file names
+        # append '_complete' to the old submission file names
         for submission in to_remove:
             file_name = str(submission.id) + '.csv'
             new_file_name = str(submission.id) + '_complete.csv'
@@ -111,7 +117,7 @@ class VoteScraper:
             try:
                 sub.refresh()
                 ratio = self.r.get_submission(sub.permalink).upvote_ratio
-            except praw.errors.Forbidden as e:
+            except Exception as e:
                 print(e)
                 continue
             ups = int(round((ratio*sub.score)/(2*ratio - 1)) if ratio != 0.5 else round(sub.score/2))
@@ -126,13 +132,12 @@ class VoteScraper:
                     abs(round((time.time() - sub.created_utc) / (60 * 60), 1)),
                     sub.short_link))
             subcsv = SubmissionCSV(file_name=sub.id)
-            subcsv.run(data_row=[time.mktime(time.gmtime()), sub.score, ups, downs, ratio])
+            subcsv.run(data_row=[time.time(), sub.score, ups, downs, ratio])
             time.sleep(2)
 
     def show_time_elapsed(self):
-        time_elapsed = time.time() - self.start_time
         # convert to hours
-        time_elapsed /= (60 * 60)
+        time_elapsed = (time.time() - self.start_time) / (60 * 60)
         self.print('{} hours passed since start of script'.format(round(time_elapsed, 1)))
 
 
