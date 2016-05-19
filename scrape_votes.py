@@ -41,7 +41,7 @@ class VoteScraper:
         self.r = None
         self.o = None
         self.subreddit = None
-        self.submission_limit = 15
+        self.submission_limit = 50
         self.start_time = time.time()
         # holds the objects for cached submissions.
         self.cached_submissions = []
@@ -110,7 +110,9 @@ class VoteScraper:
             file_name = str(submission.id) + '.csv'
             new_file_name = str(submission.id) + '_complete.csv'
             path = os.path.join(os.getcwd(), 'data', file_name)
-            os.rename(src=path, dst=os.path.join(os.getcwd(), 'data', new_file_name))
+            # only perform this if the file actually exists
+            if os.path.isfile(path):
+                os.rename(src=path, dst=os.path.join(os.getcwd(), 'data', new_file_name))
 
     def store_submissions_data(self):
         for i, sub in enumerate(self.cached_submissions):
